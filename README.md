@@ -1,6 +1,7 @@
 # Habous Prayer Times Userscript
 
 A sleek, modern glassmorphism userscript that transforms the Habous Morocco prayer times website into a beautiful, real-time dashboard.
+
 Before :
 <img width="1342" height="530" alt="image" src="https://github.com/user-attachments/assets/b50b06ff-46f5-46e8-a05a-7768d335b887" />
 After :
