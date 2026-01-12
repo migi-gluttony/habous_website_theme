@@ -2,6 +2,9 @@
 
 A sleek, modern glassmorphism userscript that transforms the Habous Morocco prayer times website into a beautiful, real-time dashboard.
 
+![Uploading image.png…]()
+
+
 ## Highlights
 
 ![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)
