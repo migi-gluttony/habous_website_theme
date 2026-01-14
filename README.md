@@ -7,7 +7,15 @@ Two beautiful themes that transform the Habous Morocco prayer times website into
 Before :
 <img width="1342" height="530" alt="image" src="https://github.com/user-attachments/assets/b50b06ff-46f5-46e8-a05a-7768d335b887" />
 After :
-<img width="1361" height="558" alt="image" src="https://github.com/user-attachments/assets/947cd6df-4758-40e1-b16e-9e0af0cc8c0f" />
+
+**Glassmorphism**
+
+<img width="858" height="684" alt="image" src="https://github.com/user-attachments/assets/86ed1542-a4a5-44e6-a44f-38179bf2a254" />
+
+
+**Terminal**
+
+<img width="844" height="533" alt="image" src="https://github.com/user-attachments/assets/dd5de832-f560-4e24-933b-7b7d4da75ef1" />
 
 
 ## Highlights
