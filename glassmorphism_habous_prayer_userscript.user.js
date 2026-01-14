@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Habous Minimal Prayer Times + Alerts
+// @name         Habous Prayer Times - Glassmorphism Theme (10 Color Palettes)
 // @namespace    https://github.com/your-namespace
-// @version      0.6.0
-// @description  Keep city selector; show only today's prayer times, live countdowns, and 5‑minute alerts.
+// @version      2.0.0
+// @description  Beautiful frosted glass design with 10 customizable color schemes: Dark themes (Midnight Purple, Deep Ocean, Forest Night, Amethyst Dark, Royal Blue) and Light themes (Cloud White, Soft Peach, Mint Fresh, Lavender Light, Rose Gold). Features favorites bar, theme mode toggle, and live prayer countdowns.
 // @match        https://habous.gov.ma/prieres/horaire_hijri_2.php*
 // @run-at       document-end
 // @grant        GM_addStyle
@@ -19,6 +19,210 @@
 
   // Time format preference (default: 24-hour)
   let use12Hour = localStorage.getItem('tmk-time-format') === '12';
+
+  // Detect system theme preference on first load
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Theme mode preference (default: system preference)
+  let themeMode = localStorage.getItem('tmk-glass-theme-mode');
+  if (!themeMode) {
+    themeMode = systemPrefersDark ? 'dark' : 'light';
+    localStorage.setItem('tmk-glass-theme-mode', themeMode);
+  }
+  
+  // Separate theme preferences for dark and light modes
+  const defaultDarkTheme = 'MidnightPurple';
+  const defaultLightTheme = 'CloudWhite';
+  
+  let darkTheme = localStorage.getItem('tmk-glass-theme-dark') || defaultDarkTheme;
+  let lightTheme = localStorage.getItem('tmk-glass-theme-light') || defaultLightTheme;
+  
+  // Current theme based on mode
+  let currentTheme = themeMode === 'dark' ? darkTheme : lightTheme;
+
+  // Theme categorization
+  const themeCategories = {
+    dark: ['MidnightPurple', 'DeepOcean', 'ForestNight', 'AmethystDark', 'RoyalBlue'],
+    light: ['CloudWhite', 'SoftPeach', 'MintFresh', 'LavenderLight', 'RoseGold']
+  };
+
+  // Glass morphism color schemes
+  const colorSchemes = {
+    // Dark Themes
+    MidnightPurple: {
+      name: 'Midnight Purple',
+      bodyBg: '#050505',
+      ambientColors: [
+        'rgba(76, 29, 149, 0.25)',
+        'rgba(236, 72, 153, 0.15)',
+        'rgba(56, 189, 248, 0.2)',
+        'rgba(20, 184, 166, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.06)',
+      glassBgHover: 'rgba(255,255,255,0.1)',
+      glassBorder: 'rgba(255,255,255,0.1)',
+      glassBorderHover: 'rgba(255,255,255,0.25)',
+      text: 'rgba(255,255,255,0.9)',
+      textMuted: 'rgba(255,255,255,0.5)',
+      textDim: 'rgba(255,255,255,0.4)'
+    },
+    DeepOcean: {
+      name: 'Deep Ocean',
+      bodyBg: '#0a0e1a',
+      ambientColors: [
+        'rgba(56, 189, 248, 0.3)',
+        'rgba(14, 165, 233, 0.2)',
+        'rgba(20, 184, 166, 0.25)',
+        'rgba(6, 182, 212, 0.15)'
+      ],
+      glassBg: 'rgba(56,189,248,0.08)',
+      glassBgHover: 'rgba(56,189,248,0.15)',
+      glassBorder: 'rgba(56,189,248,0.2)',
+      glassBorderHover: 'rgba(56,189,248,0.4)',
+      text: 'rgba(255,255,255,0.95)',
+      textMuted: 'rgba(186,230,253,0.7)',
+      textDim: 'rgba(186,230,253,0.5)'
+    },
+    ForestNight: {
+      name: 'Forest Night',
+      bodyBg: '#0a1410',
+      ambientColors: [
+        'rgba(34, 197, 94, 0.25)',
+        'rgba(20, 184, 166, 0.2)',
+        'rgba(74, 222, 128, 0.15)',
+        'rgba(16, 185, 129, 0.2)'
+      ],
+      glassBg: 'rgba(74,222,128,0.08)',
+      glassBgHover: 'rgba(74,222,128,0.15)',
+      glassBorder: 'rgba(74,222,128,0.2)',
+      glassBorderHover: 'rgba(74,222,128,0.4)',
+      text: 'rgba(255,255,255,0.95)',
+      textMuted: 'rgba(187,247,208,0.7)',
+      textDim: 'rgba(187,247,208,0.5)'
+    },
+    AmethystDark: {
+      name: 'Amethyst Dark',
+      bodyBg: '#120a1a',
+      ambientColors: [
+        'rgba(139, 92, 246, 0.3)',
+        'rgba(168, 85, 247, 0.2)',
+        'rgba(192, 132, 252, 0.25)',
+        'rgba(147, 51, 234, 0.15)'
+      ],
+      glassBg: 'rgba(168,85,247,0.1)',
+      glassBgHover: 'rgba(168,85,247,0.18)',
+      glassBorder: 'rgba(168,85,247,0.25)',
+      glassBorderHover: 'rgba(168,85,247,0.45)',
+      text: 'rgba(255,255,255,0.95)',
+      textMuted: 'rgba(233,213,255,0.7)',
+      textDim: 'rgba(233,213,255,0.5)'
+    },
+    RoyalBlue: {
+      name: 'Royal Blue',
+      bodyBg: '#050a1a',
+      ambientColors: [
+        'rgba(59, 130, 246, 0.3)',
+        'rgba(37, 99, 235, 0.2)',
+        'rgba(96, 165, 250, 0.25)',
+        'rgba(29, 78, 216, 0.15)'
+      ],
+      glassBg: 'rgba(96,165,250,0.1)',
+      glassBgHover: 'rgba(96,165,250,0.18)',
+      glassBorder: 'rgba(96,165,250,0.25)',
+      glassBorderHover: 'rgba(96,165,250,0.45)',
+      text: 'rgba(255,255,255,0.95)',
+      textMuted: 'rgba(219,234,254,0.7)',
+      textDim: 'rgba(219,234,254,0.5)'
+    },
+    // Light Themes
+    CloudWhite: {
+      name: 'Cloud White',
+      bodyBg: '#f8fafc',
+      ambientColors: [
+        'rgba(148, 163, 184, 0.15)',
+        'rgba(203, 213, 225, 0.2)',
+        'rgba(226, 232, 240, 0.25)',
+        'rgba(241, 245, 249, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.8)',
+      glassBgHover: 'rgba(255,255,255,0.95)',
+      glassBorder: 'rgba(148,163,184,0.2)',
+      glassBorderHover: 'rgba(100,116,139,0.3)',
+      text: 'rgba(15,23,42,0.95)',
+      textMuted: 'rgba(71,85,105,0.8)',
+      textDim: 'rgba(100,116,139,0.6)'
+    },
+    SoftPeach: {
+      name: 'Soft Peach',
+      bodyBg: '#fff7ed',
+      ambientColors: [
+        'rgba(251, 146, 60, 0.12)',
+        'rgba(253, 186, 116, 0.15)',
+        'rgba(254, 215, 170, 0.2)',
+        'rgba(255, 237, 213, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.85)',
+      glassBgHover: 'rgba(255,255,255,0.98)',
+      glassBorder: 'rgba(251,146,60,0.2)',
+      glassBorderHover: 'rgba(249,115,22,0.35)',
+      text: 'rgba(67,20,7,0.95)',
+      textMuted: 'rgba(154,52,18,0.8)',
+      textDim: 'rgba(194,65,12,0.6)'
+    },
+    MintFresh: {
+      name: 'Mint Fresh',
+      bodyBg: '#f0fdfa',
+      ambientColors: [
+        'rgba(20, 184, 166, 0.15)',
+        'rgba(45, 212, 191, 0.12)',
+        'rgba(94, 234, 212, 0.18)',
+        'rgba(153, 246, 228, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.85)',
+      glassBgHover: 'rgba(255,255,255,0.98)',
+      glassBorder: 'rgba(20,184,166,0.25)',
+      glassBorderHover: 'rgba(13,148,136,0.4)',
+      text: 'rgba(4,47,46,0.95)',
+      textMuted: 'rgba(19,78,74,0.8)',
+      textDim: 'rgba(15,118,110,0.6)'
+    },
+    LavenderLight: {
+      name: 'Lavender Light',
+      bodyBg: '#faf5ff',
+      ambientColors: [
+        'rgba(168, 85, 247, 0.12)',
+        'rgba(192, 132, 252, 0.15)',
+        'rgba(216, 180, 254, 0.18)',
+        'rgba(233, 213, 255, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.85)',
+      glassBgHover: 'rgba(255,255,255,0.98)',
+      glassBorder: 'rgba(168,85,247,0.2)',
+      glassBorderHover: 'rgba(147,51,234,0.35)',
+      text: 'rgba(59,7,100,0.95)',
+      textMuted: 'rgba(107,33,168,0.8)',
+      textDim: 'rgba(126,34,206,0.6)'
+    },
+    RoseGold: {
+      name: 'Rose Gold',
+      bodyBg: '#fff1f2',
+      ambientColors: [
+        'rgba(244, 63, 94, 0.12)',
+        'rgba(251, 113, 133, 0.15)',
+        'rgba(253, 164, 175, 0.18)',
+        'rgba(254, 205, 211, 0.15)'
+      ],
+      glassBg: 'rgba(255,255,255,0.85)',
+      glassBgHover: 'rgba(255,255,255,0.98)',
+      glassBorder: 'rgba(244,63,94,0.2)',
+      glassBorderHover: 'rgba(225,29,72,0.35)',
+      text: 'rgba(76,5,25,0.95)',
+      textMuted: 'rgba(159,18,57,0.8)',
+      textDim: 'rgba(190,18,60,0.6)'
+    }
+  };
+
+  const theme = colorSchemes[currentTheme] || colorSchemes.MidnightPurple;
 
   // Favorites management
   function getFavorites() {
@@ -81,9 +285,9 @@
       font-size: 15px;
       font-weight: 500;
       border-radius: 32px;
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.9);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: ${theme.glassBg};
+      color: ${theme.text};
+      border: 1px solid ${theme.glassBorder};
       cursor: pointer;
       outline: none;
       appearance: none;
@@ -95,33 +299,33 @@
     
     const arrow = document.createElement('div');
     arrow.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-    arrow.style.cssText = 'position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(255,255,255,0.5);transition:all 0.3s ease';
+    arrow.style.cssText = `position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:${theme.textMuted};transition:all 0.3s ease`;
     
     cloned.addEventListener('mouseover', () => {
-      cloned.style.background = 'rgba(255,255,255,0.1)';
-      cloned.style.borderColor = 'rgba(255,255,255,0.2)';
-      arrow.style.color = 'rgba(255,255,255,0.8)';
+      cloned.style.background = theme.glassBgHover;
+      cloned.style.borderColor = theme.glassBorderHover;
+      arrow.style.color = theme.text;
     });
     cloned.addEventListener('mouseout', () => {
       if (document.activeElement !== cloned) {
-        cloned.style.background = 'rgba(255,255,255,0.06)';
-        cloned.style.borderColor = 'rgba(255,255,255,0.1)';
-        arrow.style.color = 'rgba(255,255,255,0.5)';
+        cloned.style.background = theme.glassBg;
+        cloned.style.borderColor = theme.glassBorder;
+        arrow.style.color = theme.textMuted;
       }
     });
     cloned.addEventListener('focus', () => {
-      cloned.style.background = 'rgba(255,255,255,0.08)';
-      cloned.style.borderColor = 'rgba(255,255,255,0.3)';
-      cloned.style.boxShadow = '0 0 0 4px rgba(255,255,255,0.05)';
+      cloned.style.background = theme.glassBgHover;
+      cloned.style.borderColor = theme.glassBorderHover;
+      cloned.style.boxShadow = `0 0 0 4px ${theme.glassBorder}`;
       arrow.style.transform = 'translateY(-50%) rotate(180deg)';
-      arrow.style.color = 'white';
+      arrow.style.color = theme.text;
     });
     cloned.addEventListener('blur', () => {
       cloned.style.boxShadow = 'none';
-      cloned.style.background = 'rgba(255,255,255,0.06)';
-      cloned.style.borderColor = 'rgba(255,255,255,0.1)';
+      cloned.style.background = theme.glassBg;
+      cloned.style.borderColor = theme.glassBorder;
       arrow.style.transform = 'translateY(-50%) rotate(0deg)';
-      arrow.style.color = 'rgba(255,255,255,0.5)';
+      arrow.style.color = theme.textMuted;
     });
     Array.from(original.options).forEach((o) => {
       const opt = document.createElement('option');
@@ -152,9 +356,9 @@
       font-size: 13px;
       font-weight: 600;
       border-radius: 32px;
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.9);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: ${theme.glassBg};
+      color: ${theme.text};
+      border: 1px solid ${theme.glassBorder};
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(20px);
@@ -165,13 +369,13 @@
     btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>${use12Hour ? '12H' : '24H'}</span>`;
     
     btn.addEventListener('mouseover', () => {
-      btn.style.background = 'rgba(255,255,255,0.1)';
-      btn.style.borderColor = 'rgba(255,255,255,0.25)';
+      btn.style.background = theme.glassBgHover;
+      btn.style.borderColor = theme.glassBorderHover;
       btn.style.transform = 'translateY(-2px)';
     });
     btn.addEventListener('mouseout', () => {
-      btn.style.background = 'rgba(255,255,255,0.06)';
-      btn.style.borderColor = 'rgba(255,255,255,0.1)';
+      btn.style.background = theme.glassBg;
+      btn.style.borderColor = theme.glassBorder;
       btn.style.transform = 'translateY(0)';
     });
     btn.addEventListener('click', () => {
@@ -183,6 +387,135 @@
     return btn;
   }
 
+  function createThemeModeToggle(onModeChange) {
+    const btn = document.createElement('button');
+    btn.id = 'tmk-theme-mode-btn';
+    btn.className = 'tmk-glass-btn';
+    btn.style.cssText = `
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 32px;
+      background: ${theme.glassBg};
+      color: ${theme.text};
+      border: 1px solid ${theme.glassBorder};
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    `;
+    
+    const updateButton = () => {
+      btn.innerHTML = themeMode === 'dark' 
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>' 
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+    };
+    updateButton();
+    
+    btn.addEventListener('mouseover', () => {
+      btn.style.background = theme.glassBgHover;
+      btn.style.borderColor = theme.glassBorderHover;
+      btn.style.transform = 'translateY(-2px)';
+    });
+    btn.addEventListener('mouseout', () => {
+      btn.style.background = theme.glassBg;
+      btn.style.borderColor = theme.glassBorder;
+      btn.style.transform = 'translateY(0)';
+    });
+    btn.addEventListener('click', () => {
+      // Save current theme for current mode
+      if (themeMode === 'dark') {
+        localStorage.setItem('tmk-glass-theme-dark', currentTheme);
+      } else {
+        localStorage.setItem('tmk-glass-theme-light', currentTheme);
+      }
+      
+      // Switch mode
+      themeMode = themeMode === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('tmk-glass-theme-mode', themeMode);
+      
+      // Load remembered theme for new mode
+      currentTheme = themeMode === 'dark' 
+        ? (localStorage.getItem('tmk-glass-theme-dark') || defaultDarkTheme)
+        : (localStorage.getItem('tmk-glass-theme-light') || defaultLightTheme);
+      
+      if (onModeChange) onModeChange();
+    });
+    return btn;
+  }
+
+  function createThemeSelector(onThemeChange) {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:relative;display:inline-flex;align-items:center';
+    
+    const select = document.createElement('select');
+    select.id = 'tmk-glass-theme-select';
+    select.className = 'tmk-glass-select';
+    select.style.cssText = `
+      padding: 14px 48px 14px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 32px;
+      background: ${theme.glassBg};
+      color: ${theme.text};
+      border: 1px solid ${theme.glassBorder};
+      cursor: pointer;
+      transition: all 0.3s ease;
+      appearance: none;
+      min-width: 180px;
+      backdrop-filter: blur(20px);
+    `;
+    
+    // Add options for themes in current mode only
+    const themesForMode = themeCategories[themeMode] || themeCategories.dark;
+    themesForMode.forEach(themeKey => {
+      const opt = document.createElement('option');
+      opt.value = themeKey;
+      opt.textContent = colorSchemes[themeKey].name;
+      if (themeKey === currentTheme) opt.selected = true;
+      select.appendChild(opt);
+    });
+    
+    const arrow = document.createElement('div');
+    arrow.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+    arrow.style.cssText = `position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:${theme.textMuted};transition:all 0.3s ease`;
+    
+    select.addEventListener('mouseover', () => {
+      select.style.background = theme.glassBgHover;
+      select.style.borderColor = theme.glassBorderHover;
+      arrow.style.color = theme.text;
+    });
+    select.addEventListener('mouseout', () => {
+      select.style.background = theme.glassBg;
+      select.style.borderColor = theme.glassBorder;
+      arrow.style.color = theme.textMuted;
+    });
+    select.addEventListener('focus', () => {
+      select.style.borderColor = theme.glassBorderHover;
+      arrow.style.transform = 'translateY(-50%) rotate(180deg)';
+    });
+    select.addEventListener('blur', () => {
+      select.style.borderColor = theme.glassBorder;
+      arrow.style.transform = 'translateY(-50%) rotate(0deg)';
+    });
+    select.addEventListener('change', () => {
+      currentTheme = select.value;
+      // Save to mode-specific storage
+      if (themeMode === 'dark') {
+        localStorage.setItem('tmk-glass-theme-dark', currentTheme);
+      } else {
+        localStorage.setItem('tmk-glass-theme-light', currentTheme);
+      }
+      if (onThemeChange) onThemeChange();
+    });
+    
+    wrapper.appendChild(select);
+    wrapper.appendChild(arrow);
+    return wrapper;
+  }
+
   function createFavoriteButton(villeId, cityName, onToggle) {
     const btn = document.createElement('button');
     btn.id = 'tmk-favorite-btn';
@@ -191,9 +524,9 @@
     btn.style.cssText = `
       padding: 14px 18px;
       border-radius: 32px;
-      background: rgba(255,255,255,0.06);
-      color: ${isFav ? '#fbbf24' : 'rgba(255,255,255,0.8)'};
-      border: 1px solid rgba(255,255,255,0.1);
+      background: ${theme.glassBg};
+      color: ${isFav ? '#fbbf24' : theme.text};
+      border: 1px solid ${theme.glassBorder};
       cursor: pointer;
       transition: all 0.3s ease;
       backdrop-filter: blur(20px);
@@ -214,15 +547,15 @@
     });
     btn.addEventListener('mouseout', () => {
       const currentFav = isFavorite(villeId);
-      btn.style.background = 'rgba(255,255,255,0.06)';
-      btn.style.borderColor = 'rgba(255,255,255,0.1)';
+      btn.style.background = theme.glassBg;
+      btn.style.borderColor = theme.glassBorder;
       btn.style.transform = 'translateY(0) scale(1)';
-      btn.style.color = currentFav ? '#fbbf24' : 'rgba(255,255,255,0.8)';
+      btn.style.color = currentFav ? '#fbbf24' : theme.text;
     });
     btn.addEventListener('click', () => {
       const added = toggleFavorite(villeId, cityName);
       btn.innerHTML = added ? uiIcons.starFilled : uiIcons.starOutline;
-      btn.style.color = added ? '#fbbf24' : 'rgba(255,255,255,0.8)';
+      btn.style.color = added ? '#fbbf24' : theme.text;
       btn.title = added ? 'Remove from favorites' : 'Add to favorites';
       if (onToggle) onToggle();
     });
@@ -241,9 +574,9 @@
       margin: 0 auto 24px auto;
       padding: 24px 32px;
       box-sizing: border-box;
-      background: rgba(255,255,255,0.04);
+      background: ${theme.glassBg};
       border-radius: 40px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid ${theme.glassBorder};
       backdrop-filter: blur(40px);
       display: flex;
       flex-direction: column;
@@ -251,7 +584,7 @@
     `;
     
     const title = document.createElement('div');
-    title.style.cssText = 'font-size:11px;color:rgba(255,255,255,0.4);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:8px';
+    title.style.cssText = `font-size:11px;color:${theme.textDim};font-weight:700;text-transform:uppercase;letter-spacing:1.5px;display:flex;align-items:center;gap:8px`;
     title.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favorites';
     
     const favList = document.createElement('div');
@@ -264,9 +597,9 @@
         padding: 10px 18px;
         font-size: 13px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.06);
-        color: rgba(255,255,255,0.8);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: ${theme.glassBg};
+        color: ${theme.text};
+        border: 1px solid ${theme.glassBorder};
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
@@ -286,12 +619,12 @@
       favBtn.appendChild(removeBtn);
       
       favBtn.addEventListener('mouseover', () => {
-        favBtn.style.background = 'rgba(255,255,255,0.1)';
+        favBtn.style.background = theme.glassBgHover;
         favBtn.style.transform = 'translateY(-2px)';
         removeBtn.style.opacity = '1';
       });
       favBtn.addEventListener('mouseout', () => {
-        favBtn.style.background = 'rgba(255,255,255,0.06)';
+        favBtn.style.background = theme.glassBg;
         favBtn.style.transform = 'translateY(0)';
         removeBtn.style.opacity = '0';
       });
@@ -341,21 +674,21 @@
       width: 100%;
       max-width: 980px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.03);
+      background: ${theme.glassBg};
       border-radius: 56px;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid ${theme.glassBorder};
       overflow: hidden;
       backdrop-filter: blur(60px) saturate(180%);
       -webkit-backdrop-filter: blur(60px) saturate(180%);
       box-shadow: 
         0 40px 80px -20px rgba(0,0,0,0.5),
-        inset 0 0 0 1px rgba(255,255,255,0.05);
+        inset 0 0 0 1px ${theme.glassBorder};
       position: relative;
     `;
     
     // Add shine effect
     const shine = document.createElement('div');
-    shine.style.cssText = 'position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);z-index:2';
+    shine.style.cssText = `position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, ${theme.glassBorderHover}, transparent);z-index:2`;
     container.appendChild(shine);
 
     // Header with no hard border, just subtle separation
@@ -387,21 +720,21 @@
        const navBtnStyle = `
           display:inline-flex;align-items:center;justify-content:center;
           width:28px;height:28px;border-radius:50%;
-          background:rgba(255,255,255,0.1);
-          color:white;text-decoration:none;
+          background:${theme.glassBg};
+          color:${theme.text};text-decoration:none;
           transition:all 0.2s ease;
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid ${theme.glassBorder};
           flex-shrink: 0;
        `;
        const navTextStyle = `
-          font-size:11px;color:rgba(255,255,255,0.4);font-weight:500;white-space:nowrap;
+          font-size:11px;color:${theme.textDim};font-weight:500;white-space:nowrap;
           transition:all 0.2s ease;
        `;
 
        const leftControl = showLeft ? `
          <a href="?ville=${prevFav.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:8px;" 
-            onmouseover="this.querySelector('div').style.background='rgba(255,255,255,0.2)';this.querySelector('div').style.transform='translateX(-2px)'"
-            onmouseout="this.querySelector('div').style.background='rgba(255,255,255,0.1)';this.querySelector('div').style.transform='translateX(0)'"
+            onmouseover="this.querySelector('div').style.background='${theme.glassBgHover}';this.querySelector('div').style.transform='translateX(-2px)'"
+            onmouseout="this.querySelector('div').style.background='${theme.glassBg}';this.querySelector('div').style.transform='translateX(0)'"
             title="Previous: ${prevFav.name}">
             <span style="${navTextStyle}">${prevFav.name}</span>
             <div style="${navBtnStyle}">
@@ -412,8 +745,8 @@
 
        const rightControl = showRight ? `
          <a href="?ville=${nextFav.id}" style="display:flex;align-items:center;gap:8px;text-decoration:none;margin-left:8px;"
-            onmouseover="this.querySelector('div').style.background='rgba(255,255,255,0.2)';this.querySelector('div').style.transform='translateX(2px)'"
-            onmouseout="this.querySelector('div').style.background='rgba(255,255,255,0.1)';this.querySelector('div').style.transform='translateX(0)'"
+            onmouseover="this.querySelector('div').style.background='${theme.glassBgHover}';this.querySelector('div').style.transform='translateX(2px)'"
+            onmouseout="this.querySelector('div').style.background='${theme.glassBg}';this.querySelector('div').style.transform='translateX(0)'"
             title="Next: ${nextFav.name}">
             <div style="${navBtnStyle}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -427,10 +760,10 @@
            <div style="justify-self:end;">${leftControl}</div>
            
            <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
-              <h2 style="font-size:24px;font-weight:700;margin:0;color:white;letter-spacing:-0.5px;text-align:center;white-space:nowrap;">
+              <h2 style="font-size:24px;font-weight:700;margin:0;color:${theme.text};letter-spacing:-0.5px;text-align:center;white-space:nowrap;">
                 ${cityName || 'Morocco'}
               </h2>
-             <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:5px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">
+             <div style="font-size:12px;color:${theme.textMuted};margin-top:6px;display:flex;align-items:center;justify-content:center;gap:5px;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">
                ${uiIcons.starFilled.replace('width="20" height="20"', 'width="12" height="12" style="color:#fbbf24"')}
                Favorites (${currentIndex + 1}/${favorites.length})
              </div>
@@ -443,7 +776,7 @@
        // Standard display
        cityContent = `
          <div style="text-align:center;">
-             <h2 style="font-size:28px;font-weight:700;margin:0;color:white;letter-spacing:-0.5px;">${cityName || 'Morocco'}</h2>
+             <h2 style="font-size:28px;font-weight:700;margin:0;color:${theme.text};letter-spacing:-0.5px;">${cityName || 'Morocco'}</h2>
          </div>
        `;
     }
@@ -455,14 +788,14 @@
             width: 64px;
             height: 64px;
             border-radius: 20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            background: linear-gradient(135deg, ${theme.glassBgHover}, ${theme.glassBg});
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid ${theme.glassBorder};
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
           ">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="${theme.text}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v2"/>
               <path d="M12 8a4 4 0 0 1 4 4v8H8v-8a4 4 0 0 1 4-4z"/>
               <path d="M8 22H4v-6a4 4 0 0 1 4-4"/>
@@ -472,16 +805,16 @@
             </svg>
           </div>
           <div>
-            <h1 style="font-size:36px;font-weight:700;margin:0;color:white;letter-spacing:-0.5px;text-shadow:0 2px 10px rgba(0,0,0,0.3)">Prayer Times</h1>
+            <h1 style="font-size:36px;font-weight:700;margin:0;color:${theme.text};letter-spacing:-0.5px;text-shadow:0 2px 10px rgba(0,0,0,0.3)">Prayer Times</h1>
           </div>
         </div>
         
         ${cityContent}
         
         <div style="text-align:right">
-          <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.4);margin-bottom:4px">Today</div>
-          <div style="font-size:18px;color:rgba(255,255,255,0.9);font-weight:600">${hijriDate || ''}</div>
-          <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:2px">${gregDate || ''}</div>
+          <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:${theme.textDim};margin-bottom:4px">Today</div>
+          <div style="font-size:18px;color:${theme.text};font-weight:600">${hijriDate || ''}</div>
+          <div style="font-size:14px;color:${theme.textMuted};margin-top:2px">${gregDate || ''}</div>
         </div>
       </div>
     `;
@@ -508,10 +841,10 @@
           <div class="tmk-tile-glow" style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, ${colors.glow}, transparent 70%);opacity:0;transition:opacity 0.6s ease;mix-blend-mode:screen;border-radius:inherit;"></div>
           
           <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
-            <div class="tmk-prayer-icon" style="width:40px;height:40px;margin-bottom:12px;color:rgba(255,255,255,0.8);transition:all 0.4s ease;">${icon}</div>
-            <div class="tmk-prayer-name" style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:8px;letter-spacing:1px;transition:all 0.4s ease">${p.name}</div>
-            <div class="tmk-time tmk-prayer-time" style="font-size:24px;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:4px;font-feature-settings:'tnum';letter-spacing:0px;transition:all 0.4s ease;">${formatTime(p.timeStr)}</div>
-            <div class="tmk-countdown" style="font-size:12px;color:rgba(255,255,255,0.5);min-height:20px;font-weight:500;transition:all 0.4s ease;"></div>
+            <div class="tmk-prayer-icon" style="width:40px;height:40px;margin-bottom:12px;color:${theme.text};transition:all 0.4s ease;">${icon}</div>
+            <div class="tmk-prayer-name" style="font-size:12px;font-weight:600;color:${theme.textDim};text-transform:uppercase;margin-bottom:8px;letter-spacing:1px;transition:all 0.4s ease">${p.name}</div>
+            <div class="tmk-time tmk-prayer-time" style="font-size:24px;font-weight:600;color:${theme.text};margin-bottom:4px;font-feature-settings:'tnum';letter-spacing:0px;transition:all 0.4s ease;">${formatTime(p.timeStr)}</div>
+            <div class="tmk-countdown" style="font-size:12px;color:${theme.textMuted};min-height:20px;font-weight:500;transition:all 0.4s ease;"></div>
           </div>
         `;
         tile.innerHTML = tileContent;
@@ -531,9 +864,9 @@
     const footer = document.createElement('div');
     footer.style.cssText = `
       padding: 20px 48px 24px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid ${theme.glassBorder};
       font-size: 13px;
-      color: rgba(255,255,255,0.4);
+      color: ${theme.textDim};
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -789,6 +1122,14 @@
         });
       });
 
+      const themeModeBtn = createThemeModeToggle(() => {
+        window.location.reload();
+      });
+      
+      const themeBtn = createThemeSelector(() => {
+        window.location.reload();
+      });
+
       const controlsWrapper = document.createElement('div');
       controlsWrapper.className = 'tmk-controls-wrapper';
       controlsWrapper.style.cssText = `
@@ -801,9 +1142,9 @@
         margin: 0 auto 28px auto;
         padding: 16px 24px;
         box-sizing: border-box;
-        background: rgba(255,255,255,0.03);
+        background: ${theme.glassBg};
         border-radius: 32px;
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid ${theme.glassBorder};
         backdrop-filter: blur(50px);
         -webkit-backdrop-filter: blur(50px);
         box-shadow: 0 8px 32px rgba(0,0,0,0.1);
@@ -814,9 +1155,15 @@
         window.location.reload();
       });
       controlsWrapper.appendChild(favoriteBtn);
+      controlsWrapper.appendChild(themeModeBtn);
+      controlsWrapper.appendChild(themeBtn);
       controlsWrapper.appendChild(toggleBtn);
 
       document.body.innerHTML = '';
+      
+      const favPanel = createFavoritesPanel();
+      if (favPanel) document.body.appendChild(favPanel);
+      
       document.body.appendChild(controlsWrapper);
       
       document.body.appendChild(ui);
@@ -838,12 +1185,12 @@
         }
         
         body { 
-          background: #050505;
+          background: ${theme.bodyBg};
           margin: 0;
           padding: 48px 28px;
           min-height: 100vh;
           font-family: var(--font-primary);
-          color: white;
+          color: ${theme.text};
           overflow-x: hidden;
         }
         
@@ -856,10 +1203,10 @@
           right: -50%;
           bottom: -50%;
           background: 
-            radial-gradient(circle at 50% 50%, rgba(76, 29, 149, 0.25), transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15), transparent 40%),
-            radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.2), transparent 40%),
-            radial-gradient(circle at 10% 10%, rgba(20, 184, 166, 0.15), transparent 40%);
+            radial-gradient(circle at 50% 50%, ${theme.ambientColors[0]}, transparent 50%),
+            radial-gradient(circle at 80% 20%, ${theme.ambientColors[1]}, transparent 40%),
+            radial-gradient(circle at 20% 80%, ${theme.ambientColors[2]}, transparent 40%),
+            radial-gradient(circle at 10% 10%, ${theme.ambientColors[3]}, transparent 40%);
           filter: blur(90px);
           z-index: -2;
           animation: ambientMove 20s ease-in-out infinite alternate;
@@ -891,18 +1238,18 @@
         .tmk-prayer-tile {
           transform: scale(1);
           border-radius: 36px;
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.1);
+          background: ${theme.glassBg};
+          border: 1px solid ${theme.glassBorder};
           transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .tmk-prayer-tile:hover { 
           transform: translateY(-8px) scale(1.02);
-          background: rgba(255,255,255,0.12) !important;
-          border-color: rgba(255,255,255,0.25) !important;
+          background: ${theme.glassBgHover} !important;
+          border-color: ${theme.glassBorderHover} !important;
           box-shadow: 
             0 24px 48px -12px rgba(0,0,0,0.4),
-            inset 0 1px 0 rgba(255,255,255,0.1);
+            inset 0 1px 0 ${theme.glassBorder};
         }
         
         .tmk-prayer-tile:hover .tmk-tile-color {
@@ -922,12 +1269,12 @@
         .tmk-prayer-tile.active {
           transform: translateY(-12px) scale(1.05) !important;
           z-index: 10;
-          background: rgba(255,255,255,0.1) !important;
-          border: 1px solid rgba(255,255,255,0.35) !important;
+          background: ${theme.glassBgHover} !important;
+          border: 1px solid ${theme.glassBorderHover} !important;
           box-shadow: 
             0 32px 64px -16px rgba(0,0,0,0.5),
             0 0 40px -10px var(--active-glow, rgba(150,150,255,0.3)),
-            inset 0 0 0 1px rgba(255,255,255,0.1);
+            inset 0 0 0 1px ${theme.glassBorder};
         }
         
         .tmk-prayer-tile.active .tmk-tile-color {
@@ -951,7 +1298,7 @@
         }
         
         .tmk-prayer-tile.active .tmk-prayer-name { 
-          color: white !important;
+          color: ${theme.text} !important;
           letter-spacing: 2px !important;
           text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
@@ -965,7 +1312,7 @@
         }
         
         .tmk-prayer-tile.active .tmk-countdown { 
-          color: white !important;
+          color: ${theme.text} !important;
           font-size: 32px !important;
           font-weight: 700 !important;
           background: transparent !important;
@@ -1121,6 +1468,31 @@
             tick(); // Force immediate update
           }
           lastVisibilityChange = Date.now();
+        }
+      });
+      
+      // Keyboard navigation for favorite cities (ArrowLeft/ArrowRight)
+      document.addEventListener('keydown', (e) => {
+        const favorites = getFavorites();
+        if (favorites.length < 2) return; // Need at least 2 favorites to navigate
+        
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          const currentIndex = favorites.findIndex(f => f.id === currentVilleId);
+          if (currentIndex === -1) return; // Current city not in favorites
+          
+          e.preventDefault(); // Prevent page scrolling
+          
+          let newIndex;
+          if (e.key === 'ArrowLeft') {
+            newIndex = currentIndex === 0 ? favorites.length - 1 : currentIndex - 1;
+          } else {
+            newIndex = currentIndex === favorites.length - 1 ? 0 : currentIndex + 1;
+          }
+          
+          const nextFav = favorites[newIndex];
+          const url = new URL(window.location.href);
+          url.searchParams.set('ville', nextFav.id);
+          window.location.href = url.toString();
         }
       });
       
